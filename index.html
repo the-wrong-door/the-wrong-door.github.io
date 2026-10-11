@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Wrong Door</title>
+<meta name="description" content="Interactive horror. Choose carefully - door 13 is always wrong.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Wrong Door">
+<meta property="og:description" content="Interactive horror. Choose carefully - door 13 is always wrong.">
+<meta property="og:image" content="">
+<meta property="og:url" content="https://sangeetha-stories.github.io/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b090c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230b090c'/%3E%3Cpath d='M18 26c0-9 6-14 14-14s14 5 14 14c0 6-3 9-5 11v7H23v-7c-2-2-5-5-5-11z' fill='%23e8e0e4'/%3E%3Ccircle cx='26' cy='28' r='4' fill='%23c8362f'/%3E%3Ccircle cx='38' cy='28' r='4' fill='%23c8362f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0b090c; --panel:#151016; --line:#2e2430; --text:#ede6ea; --dim:#a69aa4;
+          --accent:#c8362f; --glow:rgba(200,54,47,.45); }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  html, body { margin:0; background:var(--bg); color:var(--text);
+               font:16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  [hidden] { display:none !important; }
+  a { color:inherit; }
+  .horror { font-family:Creepster, "Special Elite", Georgia, serif; font-weight:400; letter-spacing:.04em; }
+  .type { font-family:"Special Elite", "Courier New", monospace; }
+  button, .btn { font:inherit; color:var(--text); background:#221a24; border:1px solid var(--line); border-radius:8px;
+                 padding:12px 18px; cursor:pointer; text-decoration:none; display:inline-block; }
+  button:hover, .btn:hover, button:focus-visible, .btn:focus-visible { border-color:var(--accent); outline:none;
+                 box-shadow:0 0 0 3px rgba(200,54,47,.2); }
+  .primary { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; }
+  .primary:hover, .primary:focus-visible { background:#de4038; }
+
+  /* ---------- age gate ---------- */
+  .gate { position:fixed; inset:0; z-index:30; display:grid; place-items:center; padding:16px;
+          background:radial-gradient(ellipse at center, #1a0f12 0%, #050405 70%); }
+  .gate .box { max-width:460px; text-align:center; }
+  .gate h2 { font-size:clamp(2rem, 8vw, 3rem); margin:0 0 8px; color:#f2e9ec; text-shadow:0 0 20px var(--glow); }
+  .gate p { color:#cfc4ca; }
+  .gate .row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
+
+  /* ---------- hero ---------- */
+  .hero { position:relative; min-height:min(100svh, 860px); display:grid; place-items:center; overflow:hidden;
+          background:radial-gradient(circle at 72% 26%, #7a1712 0, #3a0b0a 9%, transparent 22%),
+                     linear-gradient(#120a0d, #050405); }
+  .slide { position:absolute; inset:-5%; background-size:cover; background-position:center; opacity:0;
+           transition:opacity 2.6s ease; filter:saturate(.8) contrast(1.08) brightness(.62);
+           animation:drift 22s ease-in-out infinite alternate; }
+  .slide.on { opacity:1; }
+  @keyframes drift { from { transform:scale(1.03); } to { transform:scale(1.14) translate(-2%, -1%); } }
+  .hero::after { content:""; position:absolute; inset:0; z-index:1;
+                 background:radial-gradient(ellipse at center, rgba(0,0,0,.1) 0%, rgba(0,0,0,.8) 78%),
+                            linear-gradient(to top, var(--bg) 0%, transparent 40%); }
+  .fog { position:absolute; inset:-20%; z-index:1; pointer-events:none; opacity:.4;
+         background:radial-gradient(closest-side at 30% 70%, rgba(210,200,210,.16), transparent),
+                    radial-gradient(closest-side at 75% 80%, rgba(190,180,200,.12), transparent);
+         animation:fog 30s linear infinite alternate; }
+  @keyframes fog { from { transform:translateX(-10%); } to { transform:translateX(10%); } }
+  .hero .inner { position:relative; z-index:2; text-align:center; padding:96px 16px 64px; max-width:900px; }
+  .hero h1 { margin:0; font-size:clamp(3rem, 13vw, 7.5rem); line-height:.95; color:#f4ebee;
+             text-shadow:0 0 30px var(--glow), 0 3px 0 #000; animation:flicker 7s infinite; }
+  @keyframes flicker { 0%,90%,100% { opacity:1; } 91% { opacity:.35; } 92% { opacity:1; } 95% { opacity:.55; } 96% { opacity:1; } }
+  .hero .tag { font-size:clamp(1rem, 3.2vw, 1.3rem); color:#ddd2d8; margin:16px auto 8px; max-width:40ch; }
+  .hero .count { color:var(--dim); font-size:.9rem; margin-bottom:26px; }
+  .hero .row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+
+  /* ---------- stories ---------- */
+  main { max-width:1180px; margin:0 auto; padding:24px 16px 40px; }
+  .head { display:flex; justify-content:space-between; align-items:end; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+  .head h2 { margin:0; font-size:clamp(1.8rem, 6vw, 2.6rem); color:#f2e9ec; }
+  .head input { font:inherit; color:var(--text); background:var(--panel); border:1px solid var(--line); border-radius:8px;
+                padding:10px 12px; width:min(280px, 100%); }
+  .head input:focus { outline:none; border-color:var(--accent); }
+  .grid { display:grid; gap:18px; grid-template-columns:repeat(auto-fill, minmax(min(300px, 100%), 1fr)); }
+  .card { display:flex; flex-direction:column; background:var(--panel); border:1px solid var(--line); border-radius:10px;
+          overflow:hidden; text-decoration:none; transition:transform .25s ease, border-color .25s, box-shadow .25s; }
+  .card:hover, .card:focus-visible { transform:translateY(-4px); border-color:var(--accent); outline:none;
+          box-shadow:0 14px 40px rgba(0,0,0,.6), 0 0 0 1px var(--accent), 0 0 30px rgba(200,54,47,.25); }
+  .pic { position:relative; aspect-ratio:3/2; background:radial-gradient(circle at 70% 30%, #4a0f0c, #0c0809 60%); overflow:hidden; }
+  .pic img { width:100%; height:100%; object-fit:cover; display:block; filter:brightness(.82) saturate(.85);
+             transition:transform .8s ease, filter .4s; }
+  .card:hover .pic img { transform:scale(1.07); filter:brightness(.95) saturate(1); }
+  .pic .code { position:absolute; left:10px; top:10px; font-size:.7rem; letter-spacing:.18em; background:rgba(0,0,0,.65);
+               border:1px solid var(--line); border-radius:3px; padding:2px 7px; }
+  .pic .state { position:absolute; right:10px; top:10px; font-size:.75rem; background:var(--accent); color:#fff;
+                border-radius:3px; padding:2px 8px; }
+  .body { padding:14px 16px 16px; display:flex; flex-direction:column; gap:8px; flex:1; }
+  .body h3 { margin:0; font-size:1.7rem; line-height:1.05; color:#f2e9ec; }
+  .body p { margin:0; color:#cbbfc6; font-size:.95rem; flex:1; }
+  .meta { color:var(--dim); font-size:.85rem; display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+  .meter { height:4px; background:rgba(255,255,255,.07); border-radius:2px; overflow:hidden; }
+  .meter i { display:block; height:100%; background:var(--accent); }
+  .empty { text-align:center; color:var(--dim); padding:48px 16px; border:1px dashed var(--line); border-radius:10px; }
+  footer { color:var(--dim); font-size:.85rem; border-top:1px solid var(--line); margin-top:40px; padding-top:18px;
+           display:flex; gap:18px; flex-wrap:wrap; justify-content:space-between; }
+
+  /* going into a story */
+  .curtain { position:fixed; inset:0; z-index:40; background:#050405; opacity:0; pointer-events:none;
+             display:grid; place-items:center; padding:16px; text-align:center; transition:opacity .45s ease; }
+  .curtain.on { opacity:1; pointer-events:auto; }
+  .curtain span { font-size:clamp(2rem, 8vw, 4rem); color:#f2e9ec; text-shadow:0 0 24px var(--glow); }
+  @media (prefers-reduced-motion: reduce) { .slide, .fog, .hero h1 { animation:none; } .card, .pic img { transition:none; } }
+</style>
+</head>
+<body>
+<div class="gate" id="gate" role="dialog" aria-labelledby="gateTitle" hidden>
+  <div class="box">
+    <h2 class="horror" id="gateTitle">Turn back now…</h2>
+    <p>These are frightening stories for adults: dread, danger and grim endings. You choose what happens, and not every path lets you out.</p>
+    <div class="row">
+      <button type="button" class="primary" id="enter">I am 18 or older. Let me in</button>
+      <a class="btn" href="https://www.google.com/">Leave</a>
+    </div>
+  </div>
+</div>
+
+<header class="hero" id="hero">
+  <div class="fog"></div>
+  <div class="inner">
+    <h1 class="horror" id="title"></h1>
+    <p class="tag type" id="tagline"></p>
+    <div class="count" id="count"></div>
+    <div class="row">
+      <a class="btn primary" href="#stories">Choose a story</a>
+      <button type="button" id="random">Feeling brave? Pick one for me</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="head" id="stories">
+    <h2 class="horror">The stories</h2>
+    <input type="search" id="search" placeholder="Search the stories…" aria-label="Search the stories" hidden>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="none" hidden>The first story is still being written… come back soon. If you dare.</div>
+  <footer>
+    <span>Every scene is a YouTube video; you choose the next one. Your progress stays in this browser.</span>
+    <a id="channel" target="_blank" rel="noopener" hidden>Watch on YouTube</a>
+  </footer>
+</main>
+<div class="curtain" id="curtain"><span class="horror" id="curtainText"></span></div>
+<noscript><p style="padding:16px">This site needs JavaScript.</p></noscript>
+
+<script id="site-data" type="application/json">{"title": "The Wrong Door", "tagline": "Interactive horror. Choose carefully - door 13 is always wrong.", "channel_url": "", "art": [], "stories": []}</script>
+<script>
+(function () {
+  'use strict';
+  var site = JSON.parse(document.getElementById('site-data').textContent);
+  var $ = function (id) { return document.getElementById(id); };
+  function get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+  function set(key, v) { try { localStorage.setItem(key, v); } catch (e) { /* private mode */ } }
+
+  document.title = site.title;
+  $('title').textContent = site.title;
+  $('tagline').textContent = site.tagline;
+  var totalEnd = site.stories.reduce(function (n, s) { return n + s.endings; }, 0);
+  $('count').textContent = site.stories.length ?
+    site.stories.length + (site.stories.length === 1 ? ' story · ' : ' stories · ') + totalEnd + ' endings to find' : '';
+  if (site.channel_url) { $('channel').href = site.channel_url; $('channel').hidden = false; }
+  $('random').hidden = site.stories.length < 2;
+
+  // age gate: once per browser
+  if (get('cyp:age') !== 'yes') { $('gate').hidden = false; $('enter').focus(); }
+  $('enter').addEventListener('click', function () { set('cyp:age', 'yes'); $('gate').hidden = true; });
+
+  // hero art, drawn on perchance
+  var slides = site.art.map(function (src) {
+    var d = document.createElement('div');
+    d.className = 'slide';
+    d.style.backgroundImage = 'url("' + src + '")';
+    $('hero').insertBefore(d, $('hero').firstChild);
+    return d;
+  });
+  if (slides.length) {
+    var i = 0;
+    slides[0].classList.add('on');
+    if (slides.length > 1) setInterval(function () {
+      slides[i].classList.remove('on');
+      i = (i + 1) % slides.length;
+      slides[i].classList.add('on');
+    }, 6000);
+  }
+
+  function progress(s) {
+    var saved = {};
+    try { saved = JSON.parse(get('cyp:' + s.slug)) || {}; } catch (e) { /* bad data */ }
+    return {found: (saved.found || []).length, going: (saved.path || []).length > 1};
+  }
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+
+  function card(s) {
+    var p = progress(s);
+    var a = el('a', 'card');
+    a.href = s.slug + '/';
+    a.dataset.text = (s.title + ' ' + s.logline).toLowerCase();
+    var pic = el('div', 'pic');
+    if (s.cover) {
+      var img = el('img');
+      img.src = s.slug + '/' + s.cover;
+      img.alt = '';
+      img.loading = 'lazy';
+      pic.append(img);
+    }
+    pic.append(el('span', 'code', s.code));
+    if (p.going || p.found) {
+      pic.append(el('span', 'state', p.found >= s.endings ? 'All endings found' : p.going ? 'Continue' : 'Played'));
+    }
+    var meta = el('div', 'meta');
+    meta.append(el('span', '', s.scenes + ' scenes · ' + s.endings + ' endings'),
+                el('span', '', 'Found ' + p.found + ' of ' + s.endings));
+    var meter = el('div', 'meter'), fill = el('i');
+    fill.style.width = Math.round(p.found / Math.max(1, s.endings) * 100) + '%';
+    meter.append(fill);
+    var body = el('div', 'body');
+    body.append(el('h3', 'horror', s.title), el('p', '', s.logline), meta, meter);
+    a.append(pic, body);
+    a.addEventListener('click', function (e) {
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      enter(s);
+    });
+    return a;
+  }
+
+  // a short fade to black with the story's name; its own loader takes over on the next page
+  function enter(s) {
+    $('curtainText').textContent = s.title;
+    $('curtain').classList.add('on');
+    setTimeout(function () { location.href = s.slug + '/'; }, 450);
+  }
+  window.addEventListener('pageshow', function () { $('curtain').classList.remove('on'); });
+
+  var grid = $('grid');
+  site.stories.forEach(function (s) { grid.append(card(s)); });
+  $('none').hidden = site.stories.length > 0;
+  $('search').hidden = site.stories.length < 7;
+  $('search').addEventListener('input', function () {
+    var q = this.value.trim().toLowerCase();
+    Array.prototype.forEach.call(grid.children, function (c) { c.hidden = !!q && c.dataset.text.indexOf(q) < 0; });
+  });
+  $('random').addEventListener('click', function () {
+    var fresh = site.stories.filter(function (s) { return !progress(s).found; });
+    var pool = fresh.length ? fresh : site.stories;
+    enter(pool[Math.floor(Math.random() * pool.length)]);
+  });
+})();
+</script>
+</body>
+</html>

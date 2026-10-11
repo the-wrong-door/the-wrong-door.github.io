@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sangeetha-stories.github.io/sitemap.xml
