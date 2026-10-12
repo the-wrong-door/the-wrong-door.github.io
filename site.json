@@ -1,8 +1,19 @@
 {
- "built_at": "2026-10-11T11:36:24",
+ "built_at": "2026-10-12T23:25:12",
  "title": "The Wrong Door",
  "tagline": "Interactive horror. Choose carefully - door 13 is always wrong.",
- "channel_url": "",
+ "channel_url": "https://www.youtube.com/@TheWrongDoor13",
  "art": [],
- "stories": []
+ "stories": [
+  {
+   "slug": "the-unmapped-room",
+   "title": "The Unmapped Room",
+   "code": "UNMAPP",
+   "logline": "A night caretaker at a salt-battered clifftop hotel discovers a phantom room that consumes its occupants, and must choose between sacrificing guests or becoming the hotel's next meal.",
+   "cover": "img/cover.jpg",
+   "scenes": 17,
+   "endings": 6,
+   "updated": "2026-10-10T11:44:34"
+  }
+ ]
 }

@@ -1,0 +1,261 @@
+{
+ "title": "The Unmapped Room",
+ "start": "N01",
+ "scenes": {
+  "N01": {
+   "title": "The Night Caretaker's First Shift",
+   "video_id": "Qn7rTL-6GOs",
+   "question": "Where do you direct your pry bar and your resolve?",
+   "ending": null,
+   "choices": [
+    {
+     "label": "Pry open Room 13 immediately",
+     "to": "N04"
+    },
+    {
+     "label": "Follow Clara down to the archives",
+     "to": "N05"
+    }
+   ]
+  },
+  "N04": {
+   "title": "Into the Maw",
+   "video_id": "HV5pKdKxfew",
+   "question": "How do you strike against the chamber's digestive assault?",
+   "ending": null,
+   "choices": [
+    {
+     "label": "Charge the center table to free Julian",
+     "to": "N18"
+    },
+    {
+     "label": "Shatter the pulsating vanity mirror",
+     "to": "N19"
+    },
+    {
+     "label": "Turn back and dive for the closing door",
+     "to": "N09"
+    }
+   ]
+  },
+  "N05": {
+   "title": "The Submerged Ledger",
+   "video_id": "ZzjXusJK9wo",
+   "question": "How do you respond to Clara's horrific demand?",
+   "ending": null,
+   "choices": [
+    {
+     "label": "Agree to her terms and follow her to the furnace",
+     "to": "N23"
+    },
+    {
+     "label": "Grab the meat cleaver and strike Clara",
+     "to": "N24"
+    },
+    {
+     "label": "Kick over the lantern and plunge into the drainage sluice",
+     "to": "N22"
+    }
+   ]
+  },
+  "N08": {
+   "title": "The Drop into the Marrow",
+   "video_id": "vDQgNcfBdyQ",
+   "question": "Where do you navigate through the pitch-black subterranean cavern?",
+   "ending": null,
+   "choices": [
+    {
+     "label": "Advance toward the pulsing light in the central vault",
+     "to": "N20"
+    },
+    {
+     "label": "Scavenge the luggage mounds for supplies",
+     "to": "N21"
+    },
+    {
+     "label": "Drag Julian toward the roaring seaward drainage tunnel",
+     "to": "N22"
+    }
+   ]
+  },
+  "N09": {
+   "title": "The Hallway of Eyes",
+   "video_id": "8kErvKKc8Uk",
+   "question": "",
+   "ending": "bad",
+   "choices": []
+  },
+  "N10": {
+   "title": "The Ruptured Conduit",
+   "video_id": "cRDlx7w0JTE",
+   "question": "",
+   "ending": "bad",
+   "choices": []
+  },
+  "N11": {
+   "title": "The Caretaker's Mantle",
+   "video_id": "PXGsq4Qz8rU",
+   "question": "",
+   "ending": "twist",
+   "choices": []
+  },
+  "N16": {
+   "title": "Ashes on the Cliffs",
+   "video_id": "mRwXteglOLc",
+   "question": "",
+   "ending": "good",
+   "choices": []
+  },
+  "N17": {
+   "title": "The Hive of Gristle",
+   "video_id": "_1v7bHdq1pY",
+   "question": "",
+   "ending": "bad",
+   "choices": []
+  },
+  "N18": {
+   "title": "The Strangled Threshold",
+   "video_id": "_4zztZyuuUY",
+   "question": "Do you commit entirely to saving Julian, or try to wedge the shrinking door?",
+   "ending": null,
+   "choices": [
+    {
+     "label": "Wrestle Julian from the living carpet",
+     "to": "N08"
+    },
+    {
+     "label": "Barricade the exit and flee",
+     "to": "N09"
+    }
+   ]
+  },
+  "N19": {
+   "title": "The Shattered Reflection",
+   "video_id": "UQlBeB8BXm4",
+   "question": "Where do you plunge as the chamber fractures across time?",
+   "ending": null,
+   "choices": [
+    {
+     "label": "Surrender to the 2 AM temporal reset",
+     "to": "N01"
+    },
+    {
+     "label": "Drop through the floorboards into the foundations",
+     "to": "N08"
+    },
+    {
+     "label": "Fight your way toward the basement archives",
+     "to": "N05"
+    }
+   ]
+  },
+  "N20": {
+   "title": "The Black Coral Core",
+   "video_id": "GHhuruDUyGg",
+   "question": "How do you strike with the emergency fire axe?",
+   "ending": null,
+   "choices": [
+    {
+     "label": "Bury the axe into the coral heart",
+     "to": "N16"
+    },
+    {
+     "label": "Amputate Julian's infected limb",
+     "to": "N17"
+    },
+    {
+     "label": "Sever the telegraph cables feeding the heart",
+     "to": "N25"
+    }
+   ]
+  },
+  "N21": {
+   "title": "The Sump of Lost Souls",
+   "video_id": "PCPGxZjU7Go",
+   "question": "How do you move before the subterranean scavengers overwhelm you?",
+   "ending": null,
+   "choices": [
+    {
+     "label": "Ignite a flare and charge the coral heart",
+     "to": "N20"
+    },
+    {
+     "label": "Retreat through the seaward drainage sluice",
+     "to": "N22"
+    }
+   ]
+  },
+  "N22": {
+   "title": "The Drowned Sluice",
+   "video_id": "LSHfGnspFFg",
+   "question": "Which exit do you take before the seawater fills the tunnel to the ceiling?",
+   "ending": null,
+   "choices": [
+    {
+     "label": "Climb the iron ladder into the boiler room",
+     "to": "N23"
+    },
+    {
+     "label": "Follow the submerged pipeline toward the central vault",
+     "to": "N20"
+    }
+   ]
+  },
+  "N23": {
+   "title": "The Blue Phosphorus Furnace",
+   "video_id": "oN1C5_cR0kM",
+   "question": "What do you do with the ladle and the bucket of blood?",
+   "ending": null,
+   "choices": [
+    {
+     "label": "Smash the boiler pressure valve",
+     "to": "N10"
+    },
+    {
+     "label": "Pour the blood into the furnace",
+     "to": "N11"
+    },
+    {
+     "label": "Hurl the blood into Clara's eyes and sabotage the feed line",
+     "to": "N25"
+    }
+   ]
+  },
+  "N24": {
+   "title": "The Archive Siphon",
+   "video_id": "PJlaJKtTThI",
+   "question": "Where do you escape before the steam scalds you alive?",
+   "ending": null,
+   "choices": [
+    {
+     "label": "Breach the boiler room hatchway",
+     "to": "N23"
+    },
+    {
+     "label": "Drop into the flooded drainage sluice",
+     "to": "N22"
+    }
+   ]
+  },
+  "N25": {
+   "title": "Pyre of the Old Gods",
+   "video_id": "1IOmGbz3Juk",
+   "question": "",
+   "ending": "bad",
+   "choices": []
+  }
+ },
+ "slug": "the-unmapped-room",
+ "code": "UNMAPP",
+ "logline": "A night caretaker at a salt-battered clifftop hotel discovers a phantom room that consumes its occupants, and must choose between sacrificing guests or becoming the hotel's next meal.",
+ "home": true,
+ "cover": "img/cover.jpg",
+ "loader": [
+  "img/cover.jpg",
+  "img/loader_1.jpg",
+  "img/loader_2.jpg",
+  "img/loader_3.jpg",
+  "img/loader_4.jpg",
+  "img/loader_5.jpg"
+ ]
+}

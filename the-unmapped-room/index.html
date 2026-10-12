@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Unmapped Room</title>
+<meta name="description" content="A night caretaker at a salt-battered clifftop hotel discovers a phantom room that consumes its occupants, and must choose between sacrificing guests or becoming the hotel&#x27;s next meal.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Unmapped Room - choose your path">
+<meta property="og:description" content="A night caretaker at a salt-battered clifftop hotel discovers a phantom room that consumes its occupants, and must choose between sacrificing guests or becoming the hotel&#x27;s next meal.">
+<meta property="og:image" content="https://the-wrong-door.github.io/the-unmapped-room/img/cover.jpg">
+<meta property="og:url" content="https://the-wrong-door.github.io/the-unmapped-room/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0b090c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230b090c'/%3E%3Cpath d='M18 26c0-9 6-14 14-14s14 5 14 14c0 6-3 9-5 11v7H23v-7c-2-2-5-5-5-11z' fill='%23e8e0e4'/%3E%3Ccircle cx='26' cy='28' r='4' fill='%23c8362f'/%3E%3Ccircle cx='38' cy='28' r='4' fill='%23c8362f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0b090c; --panel:#161117; --line:#2e2430; --text:#ede6ea; --dim:#a69aa4;
+          --accent:#c8362f; --glow:rgba(200,54,47,.45); --good:#4cc35e; --bad:#ef5b52; --twist:#b98cf5; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; background:var(--bg); color:var(--text);
+               font:16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  [hidden] { display:none !important; }
+  a { color:var(--dim); }
+  .horror { font-family:Creepster, "Special Elite", Georgia, serif; font-weight:400; letter-spacing:.04em; }
+  .type { font-family:"Special Elite", "Courier New", monospace; }
+
+  /* ---------- loader ---------- */
+  .loader { position:fixed; inset:0; z-index:10; display:grid; place-items:center; overflow:hidden;
+            background:#050405; transition:opacity .7s ease, visibility .7s; }
+  .loader.gone { opacity:0; visibility:hidden; }
+  .slide { position:absolute; inset:-4%; background-size:cover; background-position:center;
+           opacity:0; transition:opacity 2.4s ease; filter:saturate(.75) contrast(1.08) brightness(.7);
+           animation:drift 18s ease-in-out infinite alternate; }
+  .slide.on { opacity:1; }
+  @keyframes drift { from { transform:scale(1.02) translate(0,0); } to { transform:scale(1.12) translate(-2%,-1%); } }
+  .loader::before { content:""; position:absolute; inset:0; z-index:1;
+                    background:radial-gradient(ellipse at center, rgba(0,0,0,.15) 0%, rgba(0,0,0,.85) 75%),
+                               linear-gradient(to top, rgba(5,4,5,.95), transparent 55%); }
+  .fog { position:absolute; inset:-20%; z-index:1; pointer-events:none; opacity:.35;
+         background:radial-gradient(closest-side, rgba(200,190,200,.18), transparent),
+                    radial-gradient(closest-side at 70% 60%, rgba(180,170,190,.14), transparent);
+         animation:fog 26s linear infinite alternate; }
+  @keyframes fog { from { transform:translateX(-8%); } to { transform:translateX(8%); } }
+  .lcard { position:relative; z-index:2; width:min(640px, 100% - 32px); text-align:center; padding:24px 0; }
+  .badge { display:inline-block; font-size:.75rem; letter-spacing:.2em; color:var(--dim);
+           border:1px solid var(--line); border-radius:3px; padding:2px 8px; text-transform:uppercase; }
+  .lcard h1 { margin:14px 0 6px; font-size:clamp(2.4rem, 9vw, 4.6rem); line-height:1.02; color:#f2e9ec;
+              text-shadow:0 0 24px var(--glow), 0 2px 0 #000; animation:flicker 6s infinite; }
+  @keyframes flicker { 0%,92%,100% { opacity:1; } 93% { opacity:.4; } 94% { opacity:1; } 96% { opacity:.6; } }
+  .logline { color:#d9cfd5; margin:0 auto 22px; max-width:52ch; }
+  .whisper { min-height:1.6em; color:var(--dim); font-size:.95rem; transition:opacity .5s; }
+  .bar { height:3px; background:rgba(255,255,255,.08); border-radius:2px; overflow:hidden; margin:10px auto 22px; width:min(320px, 80%); }
+  .bar i { display:block; height:100%; width:0; background:var(--accent); box-shadow:0 0 12px var(--glow); transition:width .6s ease; }
+  .lbtns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .warn18 { margin-top:18px; color:var(--dim); font-size:.8rem; }
+
+  button { font:inherit; color:var(--text); background:#221a24; border:1px solid var(--line);
+           border-radius:8px; padding:12px 16px; cursor:pointer; text-align:left; }
+  button:hover, button:focus-visible { border-color:var(--accent); outline:none; box-shadow:0 0 0 3px rgba(200,54,47,.2); }
+  button.primary { background:var(--accent); border-color:var(--accent); color:#fff; font-weight:600; text-align:center; }
+  button.primary:hover, button.primary:focus-visible { background:#de4038; }
+  button:disabled { opacity:.5; cursor:wait; }
+
+  /* ---------- player ---------- */
+  main { max-width:960px; margin:0 auto; padding:16px; }
+  .top { display:flex; align-items:center; gap:12px; justify-content:space-between; flex-wrap:wrap; }
+  .top h1 { margin:0; font-size:clamp(1.5rem, 5vw, 2.2rem); color:#f2e9ec; text-shadow:0 0 14px var(--glow); }
+  .top a { text-decoration:none; font-size:.9rem; }
+  .frame { position:relative; width:100%; aspect-ratio:16/9; background:#000; margin-top:12px;
+           border-radius:8px; overflow:hidden; box-shadow:0 10px 40px rgba(0,0,0,.6); }
+  .frame > div, .frame iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .scene { display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap:wrap;
+           margin:10px 0 0; color:var(--dim); font-size:.9rem; }
+  .scene b { color:var(--text); }
+  .link { background:none; border:0; padding:0; color:var(--dim); text-decoration:underline; box-shadow:none !important; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px; margin-top:14px;
+           animation:rise .35s ease; }
+  @keyframes rise { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+  .panel h2 { margin:0 0 12px; font-size:1.3rem; }
+  .choices { display:grid; gap:10px; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); }
+  .choices button { font-size:1.05rem; min-height:58px; }
+  .key { display:inline-block; min-width:1.7em; font-weight:700; color:var(--accent); }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .ending { font-size:.8rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+            padding:3px 8px; border-radius:4px; border:1px solid currentColor; vertical-align:middle; }
+  .ending.good { color:var(--good); } .ending.bad { color:var(--bad); } .ending.twist { color:var(--twist); }
+  .note { color:var(--dim); font-size:.9rem; margin:0 0 10px; }
+  .trail { color:var(--dim); font-size:.85rem; margin-top:14px; }
+  .found { color:var(--dim); font-size:.9rem; margin-top:10px; }
+  .found ul { margin:6px 0 0; padding-left:20px; }
+  .hint { color:var(--dim); font-size:.8rem; margin-top:10px; }
+  footer { color:var(--dim); font-size:.8rem; margin-top:28px; display:flex; gap:16px; flex-wrap:wrap; }
+  @media (prefers-reduced-motion: reduce) { .slide, .fog, .lcard h1 { animation:none; } }
+</style>
+</head>
+<body>
+<!-- The loader covers the page only until the reader presses Begin; nothing plays under it. -->
+<div class="loader" id="loader" role="dialog" aria-labelledby="ltitle">
+  <div class="fog"></div>
+  <div class="lcard">
+    <span class="badge" id="lcode">Choose your path</span>
+    <h1 class="horror" id="ltitle"></h1>
+    <p class="logline" id="llogline"></p>
+    <div class="whisper type" id="whisper" aria-live="polite"></div>
+    <div class="bar" aria-hidden="true"><i id="progress"></i></div>
+    <div class="lbtns">
+      <button type="button" class="primary" id="begin" disabled>Loading…</button>
+      <button type="button" id="fresh" hidden>Start from the beginning</button>
+    </div>
+    <div class="warn18">Frightening content for adults (18+). Turn your sound up.
+      <a id="lhome" href="../" hidden>All stories</a></div>
+  </div>
+</div>
+
+<main id="stage">
+  <div class="top">
+    <h1 class="horror" id="title"></h1>
+    <a id="home" href="../" hidden>← All stories</a>
+  </div>
+
+  <!-- Choices and endings sit below the player, never over it or its ads. -->
+  <div class="frame"><div id="player"></div></div>
+  <div class="scene">
+    <span id="where"></span>
+    <button class="link" id="skip" type="button">Skip to the choice</button>
+  </div>
+
+  <section class="panel" id="choose" hidden>
+    <p class="note" id="chooseNote" hidden></p>
+    <h2 id="question"></h2>
+    <div class="choices" id="choices"></div>
+    <div class="hint">Keys: press A, B, C… or 1, 2, 3…</div>
+  </section>
+
+  <section class="panel" id="end" hidden>
+    <h2><span class="ending" id="endType"></span> <span id="endTitle"></span></h2>
+    <p class="note" id="endCount"></p>
+    <div class="row">
+      <button type="button" class="primary" id="restart">Start over</button>
+      <button type="button" id="back">Back to last choice</button>
+      <a id="another" href="../" hidden>Try another story</a>
+    </div>
+  </section>
+
+  <div class="trail" id="trail"></div>
+  <div class="found" id="found"></div>
+  <footer>
+    <span>Videos play from YouTube.</span>
+    <a id="yt" target="_blank" rel="noopener">Watch this scene on YouTube</a>
+    <button class="link" id="share" type="button">Share this story</button>
+  </footer>
+</main>
+<noscript><p style="padding:16px">This story needs JavaScript to play.</p></noscript>
+
+<!-- The story, embedded so the page also works where story.json cannot be fetched. -->
+<script id="story-data" type="application/json">{"title": "The Unmapped Room", "start": "N01", "scenes": {"N01": {"title": "The Night Caretaker's First Shift", "video_id": "Qn7rTL-6GOs", "question": "Where do you direct your pry bar and your resolve?", "ending": null, "choices": [{"label": "Pry open Room 13 immediately", "to": "N04"}, {"label": "Follow Clara down to the archives", "to": "N05"}]}, "N04": {"title": "Into the Maw", "video_id": "HV5pKdKxfew", "question": "How do you strike against the chamber's digestive assault?", "ending": null, "choices": [{"label": "Charge the center table to free Julian", "to": "N18"}, {"label": "Shatter the pulsating vanity mirror", "to": "N19"}, {"label": "Turn back and dive for the closing door", "to": "N09"}]}, "N05": {"title": "The Submerged Ledger", "video_id": "ZzjXusJK9wo", "question": "How do you respond to Clara's horrific demand?", "ending": null, "choices": [{"label": "Agree to her terms and follow her to the furnace", "to": "N23"}, {"label": "Grab the meat cleaver and strike Clara", "to": "N24"}, {"label": "Kick over the lantern and plunge into the drainage sluice", "to": "N22"}]}, "N08": {"title": "The Drop into the Marrow", "video_id": "vDQgNcfBdyQ", "question": "Where do you navigate through the pitch-black subterranean cavern?", "ending": null, "choices": [{"label": "Advance toward the pulsing light in the central vault", "to": "N20"}, {"label": "Scavenge the luggage mounds for supplies", "to": "N21"}, {"label": "Drag Julian toward the roaring seaward drainage tunnel", "to": "N22"}]}, "N09": {"title": "The Hallway of Eyes", "video_id": "8kErvKKc8Uk", "question": "", "ending": "bad", "choices": []}, "N10": {"title": "The Ruptured Conduit", "video_id": "cRDlx7w0JTE", "question": "", "ending": "bad", "choices": []}, "N11": {"title": "The Caretaker's Mantle", "video_id": "PXGsq4Qz8rU", "question": "", "ending": "twist", "choices": []}, "N16": {"title": "Ashes on the Cliffs", "video_id": "mRwXteglOLc", "question": "", "ending": "good", "choices": []}, "N17": {"title": "The Hive of Gristle", "video_id": "_1v7bHdq1pY", "question": "", "ending": "bad", "choices": []}, "N18": {"title": "The Strangled Threshold", "video_id": "_4zztZyuuUY", "question": "Do you commit entirely to saving Julian, or try to wedge the shrinking door?", "ending": null, "choices": [{"label": "Wrestle Julian from the living carpet", "to": "N08"}, {"label": "Barricade the exit and flee", "to": "N09"}]}, "N19": {"title": "The Shattered Reflection", "video_id": "UQlBeB8BXm4", "question": "Where do you plunge as the chamber fractures across time?", "ending": null, "choices": [{"label": "Surrender to the 2 AM temporal reset", "to": "N01"}, {"label": "Drop through the floorboards into the foundations", "to": "N08"}, {"label": "Fight your way toward the basement archives", "to": "N05"}]}, "N20": {"title": "The Black Coral Core", "video_id": "GHhuruDUyGg", "question": "How do you strike with the emergency fire axe?", "ending": null, "choices": [{"label": "Bury the axe into the coral heart", "to": "N16"}, {"label": "Amputate Julian's infected limb", "to": "N17"}, {"label": "Sever the telegraph cables feeding the heart", "to": "N25"}]}, "N21": {"title": "The Sump of Lost Souls", "video_id": "PCPGxZjU7Go", "question": "How do you move before the subterranean scavengers overwhelm you?", "ending": null, "choices": [{"label": "Ignite a flare and charge the coral heart", "to": "N20"}, {"label": "Retreat through the seaward drainage sluice", "to": "N22"}]}, "N22": {"title": "The Drowned Sluice", "video_id": "LSHfGnspFFg", "question": "Which exit do you take before the seawater fills the tunnel to the ceiling?", "ending": null, "choices": [{"label": "Climb the iron ladder into the boiler room", "to": "N23"}, {"label": "Follow the submerged pipeline toward the central vault", "to": "N20"}]}, "N23": {"title": "The Blue Phosphorus Furnace", "video_id": "oN1C5_cR0kM", "question": "What do you do with the ladle and the bucket of blood?", "ending": null, "choices": [{"label": "Smash the boiler pressure valve", "to": "N10"}, {"label": "Pour the blood into the furnace", "to": "N11"}, {"label": "Hurl the blood into Clara's eyes and sabotage the feed line", "to": "N25"}]}, "N24": {"title": "The Archive Siphon", "video_id": "PJlaJKtTThI", "question": "Where do you escape before the steam scalds you alive?", "ending": null, "choices": [{"label": "Breach the boiler room hatchway", "to": "N23"}, {"label": "Drop into the flooded drainage sluice", "to": "N22"}]}, "N25": {"title": "Pyre of the Old Gods", "video_id": "1IOmGbz3Juk", "question": "", "ending": "bad", "choices": []}}, "slug": "the-unmapped-room", "code": "UNMAPP", "logline": "A night caretaker at a salt-battered clifftop hotel discovers a phantom room that consumes its occupants, and must choose between sacrificing guests or becoming the hotel's next meal.", "home": true, "cover": "img/cover.jpg", "loader": ["img/cover.jpg", "img/loader_1.jpg", "img/loader_2.jpg", "img/loader_3.jpg", "img/loader_4.jpg", "img/loader_5.jpg"]}</script>
+<script>
+(function () {
+  'use strict';
+  var EMBEDDED = JSON.parse(document.getElementById('story-data').textContent);
+  var story = null, player = null, ready = false, current = null, path = [], found = [];
+  var KEY = 'cyp:' + (EMBEDDED.slug || EMBEDDED.title);
+  var WHISPERS = ['Locking the doors behind you…', 'The lights flicker…', 'Something is breathing in the dark…',
+                  'Do not look behind you…', 'The floorboards creak…', 'You are not alone…'];
+  var $ = function (id) { return document.getElementById(id); };
+  var steps = {data: false, api: false, player: false}, minWait = false, resumeAt = null;
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+  }
+  function store() {
+    try { localStorage.setItem(KEY, JSON.stringify({path: path, found: found})); } catch (e) { /* private mode */ }
+  }
+  function scene(id) { return story.scenes[id]; }
+  function endings() {
+    return Object.keys(story.scenes).filter(function (id) { return story.scenes[id].ending; });
+  }
+  function hidePanels() { ['choose', 'end'].forEach(function (id) { $(id).hidden = true; }); }
+
+  // ---------------------------------------------------------------- loader
+  function loaderArt(list) {
+    var box = $('loader'), slides = [];
+    list.forEach(function (src) {
+      var d = document.createElement('div');
+      d.className = 'slide';
+      d.style.backgroundImage = 'url("' + src + '")';
+      box.insertBefore(d, box.firstChild);
+      slides.push(d);
+    });
+    if (!slides.length) return;
+    var i = 0;
+    slides[0].classList.add('on');
+    if (slides.length > 1) setInterval(function () {
+      slides[i].classList.remove('on');
+      i = (i + 1) % slides.length;
+      slides[i].classList.add('on');
+    }, 4200);
+  }
+
+  function whisper() {
+    var i = 0, el = $('whisper');
+    el.textContent = WHISPERS[0];
+    return setInterval(function () {
+      el.style.opacity = 0;
+      setTimeout(function () { i = (i + 1) % WHISPERS.length; el.textContent = WHISPERS[i]; el.style.opacity = 1; }, 500);
+    }, 2600);
+  }
+
+  function progress() {
+    var done = (steps.data ? 1 : 0) + (steps.api ? 1 : 0) + (steps.player ? 1 : 0);
+    $('progress').style.width = Math.round(done / 3 * 100) + '%';
+    if (done === 3 && minWait) loaded();
+  }
+
+  var whisperTimer;
+  function loaded() {
+    var b = $('begin');
+    if (!b.disabled) return;
+    clearInterval(whisperTimer);
+    $('whisper').style.opacity = 1;
+    $('whisper').textContent = ready ? 'It is waiting for you.' :
+      'The videos could not load here. Check your connection or ad blocker, then reload.';
+    b.disabled = false;
+    if (resumeAt !== null) {
+      b.textContent = 'Continue: scene ' + path.length + ', ' + scene(resumeAt).title;
+      $('fresh').hidden = false;
+    } else {
+      b.textContent = 'Begin';
+    }
+    b.focus({preventScroll: true});
+  }
+
+  function closeLoader() {
+    $('loader').classList.add('gone');
+    $('loader').setAttribute('aria-hidden', 'true');
+  }
+
+  // ---------------------------------------------------------------- story
+  function showScene(id, autoplay) {
+    current = id;
+    var s = scene(id);
+    hidePanels();
+    var b = document.createElement('b');
+    b.textContent = s.title;
+    $('where').textContent = 'Scene ' + path.length + ': ';
+    $('where').append(b);
+    $('skip').hidden = false;
+    $('yt').href = 'https://youtu.be/' + s.video_id;
+    if (ready) {
+      if (autoplay) player.loadVideoById(s.video_id); else player.cueVideoById(s.video_id);
+    }
+    renderTrail();
+    renderFound();
+  }
+
+  function go(id) {
+    path.push(id);
+    store();
+    showScene(id, true);
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+
+  // The scene's video ended (or was skipped, or failed): ask the question, or show the ending.
+  function sceneOver(note) {
+    var s = scene(current);
+    hidePanels();
+    $('skip').hidden = true;
+    if (s.ending) {
+      if (found.indexOf(current) < 0) { found.push(current); store(); }
+      $('endType').className = 'ending ' + s.ending;
+      $('endType').textContent = s.ending + ' ending';
+      $('endTitle').textContent = s.title;
+      var all = endings().length, left = all - found.length;
+      $('endCount').textContent = 'You have found ' + found.length + ' of ' + all + ' endings.' +
+        (left ? ' ' + left + ' more ' + (left === 1 ? 'waits' : 'wait') + ' down other paths.'
+              : ' You found them all… if you survived.');
+      $('back').hidden = lastChoice() === null;
+      $('end').hidden = false;
+      renderFound();
+      $('restart').focus({preventScroll: true});
+      return;
+    }
+    $('chooseNote').hidden = !note;
+    $('chooseNote').textContent = note || '';
+    $('question').textContent = s.question || 'What do you do?';
+    var box = $('choices');
+    box.textContent = '';
+    s.choices.forEach(function (c, i) {
+      var btn = document.createElement('button');
+      var k = document.createElement('span');
+      btn.type = 'button';
+      k.className = 'key';
+      k.textContent = String.fromCharCode(65 + i);
+      btn.append(k, ' ' + c.label);
+      btn.addEventListener('click', function () { go(c.to); });
+      box.append(btn);
+    });
+    $('choose').hidden = false;
+    if (box.firstChild) box.firstChild.focus({preventScroll: true});
+  }
+
+  function lastChoice() {
+    for (var i = path.length - 2; i >= 0; i--) if (!scene(path[i]).ending) return i;
+    return null;
+  }
+
+  function restart() { path = [story.start]; store(); showScene(story.start, true); }
+
+  function back() {
+    var i = lastChoice();
+    if (i === null) return restart();
+    path = path.slice(0, i + 1);
+    store();
+    showScene(path[i], false);
+    sceneOver();
+  }
+
+  function renderTrail() {
+    var el = $('trail');
+    el.textContent = path.length > 1 ? 'Your path: ' : '';
+    if (path.length < 2) return;
+    path.forEach(function (id, i) {
+      var s = document.createElement('span');
+      s.textContent = scene(id).title;
+      if (i) el.append(' › ');
+      el.append(s);
+    });
+  }
+
+  function renderFound() {
+    var el = $('found');
+    el.textContent = 'Endings found: ' + found.length + ' of ' + endings().length;
+    if (!found.length) return;
+    var ul = document.createElement('ul');
+    found.forEach(function (id) {
+      var li = document.createElement('li');
+      li.textContent = scene(id).title + ' (' + scene(id).ending + ')';
+      ul.append(li);
+    });
+    el.append(ul);
+  }
+
+  function begin() {
+    document.title = story.title;
+    $('title').textContent = $('ltitle').textContent = story.title;
+    $('llogline').textContent = story.logline || '';
+    if (story.code) $('lcode').textContent = 'Choose your path · ' + story.code;
+    if (story.home) ['home', 'lhome', 'another'].forEach(function (id) { $(id).hidden = false; });
+    loaderArt(story.loader || []);
+    var saved = load();
+    found = (saved.found || []).filter(function (id) { return scene(id) && scene(id).ending; });
+    var p = (saved.path || []).filter(function (id) { return scene(id); });
+    if (p.length > 1 && p[0] === story.start) {
+      path = p;
+      resumeAt = p[p.length - 1];
+    } else {
+      path = [story.start];
+    }
+    showScene(path[path.length - 1], false);
+  }
+
+  // ---------------------------------------------------------------- controls
+  $('begin').addEventListener('click', function () {
+    closeLoader();
+    if (ready) player.playVideo();          // a click, so the browser lets it play with sound
+  });
+  $('fresh').addEventListener('click', function () { closeLoader(); restart(); });
+  $('skip').addEventListener('click', function () { if (ready) player.pauseVideo(); sceneOver(); });
+  $('restart').addEventListener('click', restart);
+  $('back').addEventListener('click', back);
+  $('share').addEventListener('click', function () {
+    var url = location.href.split('#')[0];
+    if (navigator.share) { navigator.share({title: story.title, url: url}).catch(function () {}); return; }
+    try {
+      navigator.clipboard.writeText(url).then(function () { $('share').textContent = 'Link copied'; });
+    } catch (e) { window.prompt('Copy this link', url); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if ($('choose').hidden || e.ctrlKey || e.metaKey || e.altKey) return;
+    var k = e.key.toUpperCase(), i = '1234'.indexOf(k);
+    if (i < 0) i = 'ABCD'.indexOf(k);
+    var c = i >= 0 && scene(current).choices[i];
+    if (c) { e.preventDefault(); go(c.to); }
+  });
+
+  function startPlayer() {
+    steps.api = true; progress();
+    player = new YT.Player('player', {
+      videoId: scene(current).video_id,
+      playerVars: {playsinline: 1, rel: 0},
+      events: {
+        onReady: function () { ready = true; steps.player = true; progress(); },
+        onStateChange: function (e) { if (e.data === YT.PlayerState.ENDED) sceneOver(); },
+        onError: function () { sceneOver('This scene could not play here. You can still choose, or watch it on YouTube.'); }
+      }
+    });
+  }
+
+  function withStory(data) {
+    story = data;
+    begin();
+    steps.data = true; progress();
+    window.onYouTubeIframeAPIReady = startPlayer;
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    tag.onerror = function () { steps.api = steps.player = true; progress(); };
+    document.head.append(tag);
+    setTimeout(function () { minWait = true; progress(); }, 2200);           // long enough to set the mood
+    setTimeout(function () { steps.api = steps.player = true; minWait = true; progress(); }, 15000);
+  }
+
+  whisperTimer = whisper();
+  // story.json beside the page wins (fix a link without re-exporting); the embedded copy is the fallback.
+  fetch('story.json').then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (d) { return d && d.scenes && d.start ? d : EMBEDDED; }, function () { return EMBEDDED; })
+    .then(withStory);
+  window.cyp = {get player() { return player; }, get path() { return path; }, sceneOver: sceneOver};
+})();
+</script>
+</body>
+</html>
